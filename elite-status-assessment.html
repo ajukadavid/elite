@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elite Status Assessment — Personality Quiz</title>
+  <meta name="description" content="Elite Status Assessment: a luxury-feel personality quiz that gauges your social sophistication and matches you with an accurate celebrity lifestyle parallel." />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --panel: #121214;
+      --gold: #caa66a;
+      --gold-2: #e6c88f;
+      --txt: #f7f7f7;
+      --muted: #b8b8bd;
+      --accent: #ffffff;
+      --error: #ff6b6b;
+      --success: #26b37a;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --spacing: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #0b0b0c, #0f0f12 40%, #0a0a0c 100%);
+      color: var(--txt);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 22px 60px;
+    }
+
+    header.hero {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--gold-2), var(--gold));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), var(--shadow);
+    }
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700; letter-spacing: 0.5px; margin: 0; font-size: 28px;
+      background: linear-gradient(90deg, var(--gold-2), var(--gold));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .tagline { color: var(--muted); margin: 6px 0 0 56px; font-size: 14px; }
+
+    .panel {
+      background: linear-gradient(180deg, #141418, #111116);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 8px; background: rgba(255,255,255,0.06);
+      border-radius: 999px; overflow: hidden; margin-bottom: 14px;
+    }
+    .progress > .bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--gold-2), var(--gold));
+      transition: width 360ms ease;
+    }
+
+    .stage { padding: 24px; }
+
+    .welcome {
+      text-align: center; padding: 40px 18px 32px;
+    }
+    .welcome h2 {
+      font-family: 'Playfair Display', serif; font-size: 34px; margin: 6px 0 10px;
+    }
+    .welcome p { color: var(--muted); max-width: 680px; margin: 0 auto; }
+
+    .actions { display: flex; justify-content: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+
+    button.primary {
+      background: linear-gradient(180deg, #e7c98f, #caa66a);
+      color: #151515; border: none; border-radius: 999px; padding: 12px 20px;
+      font-weight: 700; letter-spacing: .2px; cursor: pointer; box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease; font-size: 15px;
+    }
+    button.primary:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(202,166,106,.35); }
+    button.primary:disabled { opacity: .6; cursor: not-allowed; }
+
+    button.ghost {
+      background: transparent; color: var(--txt); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px; padding: 10px 16px; cursor: pointer; font-weight: 600; font-size: 14px;
+    }
+
+    .question-card { display: grid; gap: 14px; }
+    .q-headline {
+      font-family: 'Playfair Display', serif; font-size: 24px; margin: 6px 0 10px;
+    }
+
+    .answers { display: grid; gap: 10px; margin-top: 4px; }
+
+    .answer {
+      display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: var(--radius-sm);
+      background: #16161b; border: 1px solid rgba(255,255,255,.06); cursor: pointer; position: relative;
+      transition: border-color .2s ease, transform .08s ease;
+    }
+    .answer:hover { border-color: rgba(255,255,255,.16); }
+    .answer input { margin-top: 4px; }
+    .answer.selected { border-color: var(--gold-2); box-shadow: 0 0 0 2px rgba(230,200,143,.2) inset; }
+
+    .q-nav { display: flex; gap: 10px; justify-content: space-between; margin-top: 12px; }
+
+    .email-capture { max-width: 560px; margin: 0 auto; text-align: center; }
+    .email-capture p { color: var(--muted); }
+    .form-row { display: grid; gap: 8px; margin-top: 12px; }
+
+    .input {
+      background: #141419; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 12px 14px; color: var(--txt);
+    }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .error { color: var(--error); font-size: 12px; margin-top: 6px; }
+
+    .result {
+      display: grid; gap: 14px; max-width: 880px; margin: 0 auto;
+    }
+    .result h2 { font-family: 'Playfair Display', serif; font-size: 32px; margin: 6px 0; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: rgba(202,166,106,.15); color: var(--gold-2); font-weight: 700; font-size: 12px; border: 1px solid rgba(202,166,106,.4); }
+
+    .result-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
+    .result-card {
+      background: #141418; border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow);
+    }
+
+    .facts { color: var(--muted); }
+    .facts ul { margin: 8px 0 8px 18px; }
+
+    .share { display: flex; flex-wrap: wrap; gap: 10px; }
+    .share a, .share button {
+      border-radius: 999px; padding: 10px 14px; border: 1px solid rgba(255,255,255,.18); background: #141419; color: var(--txt);
+      text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer;
+    }
+
+    footer {
+      opacity: .7; text-align: center; margin-top: 22px; font-size: 12px; color: var(--muted);
+    }
+    footer .secret { opacity: .35; cursor: default; }
+
+    /* Admin dashboard */
+    .admin-wrap { display: none; }
+    .admin-wrap.active { display: block; }
+
+    .admin-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .admin-toolbar .group { display: flex; gap: 8px; align-items: center; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.06); vertical-align: top; }
+    th { text-align: left; color: var(--gold-2); font-size: 12px; letter-spacing: .4px; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+
+    .hidden { display: none; }
+
+    /* Animations */
+    .fade-in { animation: fadeIn .35s ease both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 900px) {
+      .result-grid { grid-template-columns: 1fr; }
+      header.hero { flex-direction: column; align-items: flex-start; }
+      .tagline { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div>
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <h1>Elite Status Assessment</h1>
+        </div>
+        <p class="tagline">A polished, research-driven personality quiz to gauge your social sophistication</p>
+      </div>
+      <div class="progress" aria-label="Quiz progress">
+        <div id="progressBar" class="bar" style="width:0%"></div>
+      </div>
+    </header>
+
+    <div class="panel">
+      <div id="stageWelcome" class="stage welcome">
+        <span class="badge">Luxury • Culture • Lifestyle</span>
+        <h2>Discover your social sophistication level</h2>
+        <p>
+          This 18-question assessment measures your lifestyle signals across fashion, travel, dining, culture,
+          and spending habits, then matches you with an accurately profiled celebrity peer.
+        </p>
+        <div class="actions">
+          <button class="primary" id="btnStart">Start the quiz</button>
+          <button class="ghost" id="btnHow">What you'll get</button>
+        </div>
+      </div>
+
+      <div id="stageQuestion" class="stage hidden">
+        <div class="question-card fade-in">
+          <div class="q-headline" id="qText">Question</div>
+          <div id="answers" class="answers"></div>
+          <div class="q-nav">
+            <button id="btnPrev" class="ghost">Back</button>
+            <div style="display:flex; gap:10px;">
+              <button id="btnNext" class="primary" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="stageEmail" class="stage email-capture hidden">
+        <h2 class="q-headline">One last step</h2>
+        <p>Enter your email to view your personalized, research-backed result. We store results locally for admin review.</p>
+        <div class="form-row">
+          <input id="emailInput" class="input" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email"/>
+          <div id="emailError" class="error hidden">Please enter a valid email address.</div>
+          <div class="hint">We never send spam. You can export your data from the hidden admin panel.</div>
+        </div>
+        <div class="actions">
+          <button id="btnEmailBack" class="ghost">Back</button>
+          <button id="btnSeeResults" class="primary">Show my results</button>
+        </div>
+      </div>
+
+      <div id="stageResult" class="stage hidden">
+        <div class="result fade-in">
+          <div>
+            <span id="resultBadge" class="badge">Your Match</span>
+            <h2 id="resultTitle">Title</h2>
+            <div class="facts" id="resultSummary"></div>
+          </div>
+          <div class="result-grid">
+            <div class="result-card">
+              <h3 style="margin: 6px 0 6px; font-family: 'Playfair Display', serif;">Why this fits you</h3>
+              <div id="resultWhy" class="facts"></div>
+            </div>
+            <div class="result-card">
+              <h3 style="margin: 6px 0 6px; font-family: 'Playfair Display', serif;">Celebrity parallel</h3>
+              <div id="resultCelebrity" class="facts"></div>
+            </div>
+          </div>
+          <div class="result-card">
+            <h3 style="margin: 6px 0 6px; font-family: 'Playfair Display', serif;">Share your result</h3>
+            <div class="share">
+              <button id="btnNativeShare">Share</button>
+              <a id="shareX" target="_blank" rel="noopener" href="#">X</a>
+              <a id="shareFB" target="_blank" rel="noopener" href="#">Facebook</a>
+              <a id="shareLI" target="_blank" rel="noopener" href="#">LinkedIn</a>
+              <button id="btnCopyLink">Copy Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="stageAdmin" class="stage admin-wrap hidden">
+        <div class="admin-toolbar">
+          <div class="group">
+            <span class="badge">Admin</span>
+            <strong>Collected Submissions</strong>
+          </div>
+          <div class="group">
+            <input id="adminSearch" class="input" placeholder="Search email or type..." style="width: 240px;"/>
+            <button id="btnExportCSV" class="ghost">Export CSV</button>
+            <button id="btnExportJSON" class="ghost">Export JSON</button>
+            <button id="btnClear" class="ghost" style="border-color: rgba(255,0,0,.35); color:#ffb3b3;">Clear All</button>
+          </div>
+        </div>
+        <div class="result-card" style="overflow:auto;">
+          <table id="adminTable">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Email</th>
+                <th>Score</th>
+                <th>Type</th>
+                <th>Celebrity</th>
+                <th>Answers (q#: choice [points])</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div id="foot" class="secret">© 2025 Elite Status Assessment</div>
+    </footer>
+  </div>
+
+  <script>
+    // ----------------------------
+    // Data & utilities
+    // ----------------------------
+
+    const STORAGE_KEY = 'elite_status_assessment_submissions_v1';
+
+    const questions = [
+      {
+        id: 'q1',
+        text: 'How often do you dine at fine dining or Michelin-starred restaurants?',
+        options: [
+          { text: 'Rarely, maybe on special occasions', points: 1 },
+          { text: 'A few times a year when there\'s a reason to celebrate', points: 2 },
+          { text: 'Monthly, I like to keep up with the scene', points: 3 },
+          { text: 'Regularly—chef\'s counters and tasting menus are my go-to', points: 4 },
+        ]
+      },
+      {
+        id: 'q2',
+        text: 'Your everyday coffee ritual looks like…',
+        options: [
+          { text: 'Home-brew or whatever\'s cheapest/closest', points: 1 },
+          { text: 'A familiar chain latte does the trick', points: 2 },
+          { text: 'Third-wave spots and single-origin pour-overs', points: 3 },
+          { text: 'Private club café or an at-home barista setup', points: 4 },
+        ]
+      },
+      {
+        id: 'q3',
+        text: 'Average monthly spend on fashion (clothing, shoes, accessories)',
+        options: [
+          { text: 'Under $100', points: 1 },
+          { text: '$100–$300', points: 2 },
+          { text: '$300–$800', points: 3 },
+          { text: '$800+ or intentional seasonal splurges', points: 4 },
+        ]
+      },
+      {
+        id: 'q4',
+        text: 'Preferred luggage or carry-on luggage brand',
+        options: [
+          { text: 'Amazon Basics / budget brand', points: 1 },
+          { text: 'Samsonite or Away', points: 2 },
+          { text: 'Tumi or Rimowa', points: 3 },
+          { text: 'Louis Vuitton or Goyard', points: 4 },
+        ]
+      },
+      {
+        id: 'q5',
+        text: 'How do you usually travel for long-haul trips?',
+        options: [
+          { text: 'Economy and flexible dates', points: 1 },
+          { text: 'Economy with upgrades if they\'re affordable', points: 2 },
+          { text: 'Business class on longer flights', points: 3 },
+          { text: 'First class or private when it makes sense', points: 4 },
+        ]
+      },
+      {
+        id: 'q6',
+        text: 'Your social media presence is…',
+        options: [
+          { text: 'Minimal—I don\'t really post', points: 1 },
+          { text: 'Casual posts for friends and family', points: 2 },
+          { text: 'Curated aesthetic and brand-conscious', points: 3 },
+          { text: 'Strategic: PR, gated communities, or a polished public image', points: 4 },
+        ]
+      },
+      {
+        id: 'q7',
+        text: 'Cultural activities you actually do most often',
+        options: [
+          { text: 'Movies at home or a local theater', points: 1 },
+          { text: 'Museum visits now and then', points: 2 },
+          { text: 'Theater, concerts, and exhibitions a few times a year', points: 3 },
+          { text: 'Art fairs, premieres, galas, and exclusive showings', points: 4 },
+        ]
+      },
+      {
+        id: 'q8',
+        text: 'When it comes to wine or spirits…',
+        options: [
+          { text: 'Whatever\'s around—beer, house wine is fine', points: 1 },
+          { text: 'Mid-shelf wine or well-made cocktails', points: 2 },
+          { text: 'Natural wines, allocated bottles, craft cocktails', points: 3 },
+          { text: 'Cellar selections, reserve lists, rare allocations', points: 4 },
+        ]
+      },
+      {
+        id: 'q9',
+        text: 'Your home design philosophy',
+        options: [
+          { text: 'Functional and affordable (IKEA, etc.)', points: 1 },
+          { text: 'High–low mix—some investment pieces', points: 2 },
+          { text: 'Design-forward with statement art/furniture', points: 3 },
+          { text: 'Curated minimalism, custom work, commissioned art', points: 4 },
+        ]
+      },
+      {
+        id: 'q10',
+        text: 'Fitness and wellness routine',
+        options: [
+          { text: 'Free workouts at home or outdoors', points: 1 },
+          { text: 'Standard gym membership', points: 2 },
+          { text: 'Boutique classes (Pilates, Barry\'s, etc.)', points: 3 },
+          { text: 'Private trainer, nutritionist, or wellness retreats', points: 4 },
+        ]
+      },
+      {
+        id: 'q11',
+        text: 'Reading material you reach for most',
+        options: [
+          { text: 'Social feeds and quick news', points: 1 },
+          { text: 'Mainstream bestsellers', points: 2 },
+          { text: 'The New Yorker, FT Weekend', points: 3 },
+          { text: 'Monocle, WSJ Off Duty, industry reports and journals', points: 4 },
+        ]
+      },
+      {
+        id: 'q12',
+        text: 'Which brand universe resonates most right now?',
+        options: [
+          { text: 'Uniqlo–Everlane practicality', points: 1 },
+          { text: 'Coach / Michael Kors approachable luxury', points: 2 },
+          { text: 'Louis Vuitton or Gucci', points: 3 },
+          { text: 'Hermès or Tiffany & Co.', points: 4 },
+        ]
+      },
+      {
+        id: 'q13',
+        text: 'Beauty/grooming splurge you\'re most likely to make',
+        options: [
+          { text: 'Drugstore staples and multi-use products', points: 1 },
+          { text: 'Sephora skincare and trending items', points: 2 },
+          { text: 'Dermatologist-recommended treatments', points: 3 },
+          { text: 'Celebrity-led luxury lines and expert facials', points: 4 },
+        ]
+      },
+      {
+        id: 'q14',
+        text: 'Networking style',
+        options: [
+          { text: 'I rarely network', points: 1 },
+          { text: 'Local events and community meetups', points: 2 },
+          { text: 'Industry mixers and conferences', points: 3 },
+          { text: 'Member clubs, board dinners, private salons', points: 4 },
+        ]
+      },
+      {
+        id: 'q15',
+        text: 'Watches/jewelry perspective',
+        options: [
+          { text: 'Functional—rarely wear jewelry', points: 1 },
+          { text: 'Fashion jewelry for variety', points: 2 },
+          { text: 'Entry luxury (Omega, TAG Heuer, etc.)', points: 3 },
+          { text: 'Fine jewelry or horology as long-term investments', points: 4 },
+        ]
+      },
+      {
+        id: 'q16',
+        text: 'Dining habits most weeks',
+        options: [
+          { text: 'Meal prep or home cooking most days', points: 1 },
+          { text: 'Casual spots and neighborhood favorites', points: 2 },
+          { text: 'New restaurants monthly with reservations', points: 3 },
+          { text: 'Chef\'s counters, omakase, tasting menus', points: 4 },
+        ]
+      },
+      {
+        id: 'q17',
+        text: 'Preferred content to unwind',
+        options: [
+          { text: 'Sitcoms or reality TV comfort', points: 1 },
+          { text: 'Big-budget blockbusters', points: 2 },
+          { text: 'Award-season films and prestige series', points: 3 },
+          { text: 'Art-house premieres and fashion films', points: 4 },
+        ]
+      },
+      {
+        id: 'q18',
+        text: 'Your hosting style when friends come over',
+        options: [
+          { text: 'Potluck or order-in', points: 1 },
+          { text: 'Themed dinner, I cook', points: 2 },
+          { text: 'Plated multi-course at home', points: 3 },
+          { text: 'Catered with staff or chef', points: 4 },
+        ]
+      }
+    ];
+
+    const resultBands = [
+      { key: 'Practical Minimalist', min: 18, max: 31 },
+      { key: 'Casual Consumer', min: 32, max: 45 },
+      { key: 'Aspiring Sophisticate', min: 46, max: 57 },
+      { key: 'Social Elite', min: 58, max: 72 },
+    ];
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function formatDate(dt){
+      try { return new Date(dt).toLocaleString(); } catch { return String(dt); }
+    }
+
+    function validateEmail(email){
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+      return re.test(String(email || '').trim());
+    }
+
+    function loadSubmissions(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+    function saveSubmission(entry){
+      const list = loadSubmissions();
+      list.push(entry);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function sumScores(answers){ return answers.reduce((acc, a) => acc + (a.points||0), 0); }
+
+    function classify(total){
+      for (const band of resultBands){ if (total >= band.min && total <= band.max) return band.key; }
+      return total >= 58 ? 'Social Elite' : total >= 46 ? 'Aspiring Sophisticate' : total >= 32 ? 'Casual Consumer' : 'Practical Minimalist';
+    }
+
+    // Deterministic pseudo-random for stable celebrity pick
+    function hashStr(s){
+      let h = 2166136261 >>> 0;
+      for (let i=0; i<s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+      return h >>> 0;
+    }
+
+    // Celebrity selection based on bracket + a couple of answer signals
+    function chooseCelebrity(type, answers){
+      const byId = Object.fromEntries(answers.map(a => [a.id, a]));
+      const seed = hashStr((byId.q12?.text||'') + (byId.q13?.text||'') + type);
+
+      if (type === 'Social Elite'){
+        // Map via q13 (beauty/grooming) and q12 (brand resonance)
+        const beauty = (byId.q13?.text||'').toLowerCase();
+        const brand = (byId.q12?.text||'').toLowerCase();
+        if (beauty.includes('celebrity-led') || brand.includes('tiffany') || brand.includes('hermès')){
+          return 'Beyoncé';
+        }
+        if (beauty.includes('celebrity-led') || brand.includes('gucci') || brand.includes('louis vuitton')){
+          // Rihanna is strongly linked to Fenty; LV/Gucci as general high fashion
+          return seed % 2 === 0 ? 'Rihanna' : 'Beyoncé';
+        }
+        // Lean to Kim if skincare/shapewear signals present
+        if (beauty.includes('skkn') || beauty.includes('celebrity-led')){
+          return 'Kim Kardashian';
+        }
+        return ['Beyoncé','Rihanna','Kim Kardashian'][seed % 3];
+      }
+
+      if (type === 'Aspiring Sophisticate'){
+        const media = (byId.q11?.text||'').toLowerCase();
+        const network = (byId.q14?.text||'').toLowerCase();
+        if (media.includes('ft') || media.includes('new yorker')) return 'Zendaya';
+        if (network.includes('industry')) return 'Ryan Reynolds';
+        return ['Ryan Reynolds','Blake Lively','Zendaya'][seed % 3];
+      }
+
+      if (type === 'Casual Consumer'){
+        const content = (byId.q17?.text||'').toLowerCase();
+        if (content.includes('reality') || content.includes('sitcoms')) return 'Jennifer Lawrence';
+        if (content.includes('blockbusters')) return 'Chris Pratt';
+        return ['Jennifer Lawrence','Chris Pratt','Emma Stone'][seed % 3];
+      }
+
+      // Practical Minimalist
+      const home = (byId.q9?.text||'').toLowerCase();
+      if (home.includes('functional')) return 'Keanu Reeves';
+      if (home.includes('high–low') || home.includes('mix')) return 'Anne Hathaway';
+      return ['Keanu Reeves','Anne Hathaway','Matt Damon'][seed % 3];
+    }
+
+    function buildCelebrityContent(type, celeb){
+      // Research-grounded summaries and recommendations
+      const sections = {
+        'Beyoncé': {
+          title: 'Social Elite — Beyoncé Match',
+          summary: `You operate at a rarefied level where discretion meets high-impact presence. Like Beyoncé, you favor meticulous craftsmanship, impeccably produced cultural moments, and investment-grade pieces. Your lifestyle signals consistent access to the best—whether that means chef's counters, curated travel, or fine jewelry that holds its value.`,
+          why: `Beyoncé’s lifestyle blends privacy with precision. From her partnership with Tiffany & Co. on high jewelry campaigns to major real estate acquisitions (including a widely-reported Malibu property purchase with Jay-Z in 2023), her choices emphasize enduring value over flash. Your answers show similar preferences—premium travel, tasting menus, and elevated cultural events—suggest you prioritize quality, legacy, and curation.`,
+          parallel: `Consider building a signature jewelry and fashion rotation that doesn’t date—think Tiffany & Co. fine jewelry or couture-level tailoring used repeatedly in new contexts. For beauty, Beyoncé launched Cécred (2024), a haircare line grounded in care and longevity—mirroring your interest in high-performance, long-term results.`,
+          suggestions: [
+            'Explore Tiffany & Co. fine jewelry as heirloom pieces',
+            'Invest in tailored suiting and couture-inspired eveningwear',
+            'Try Beyoncé’s Cécred for a luxurious, care-first hair routine'
+          ]
+        },
+        'Rihanna': {
+          title: 'Social Elite — Rihanna Match',
+          summary: `You’re an instinctive tastemaker with entrepreneurial focus. Like Rihanna, you gravitate toward bold beauty statements and modern luxury that includes everyone—but still reads unmistakably premium. You balance playfulness with power moves.`,
+          why: `Rihanna’s Fenty Beauty reshaped the industry with inclusive shade ranges and blockbuster sales; she’s also linked to high-profile fashion ventures (Savage X Fenty) and a revived Puma collaboration (2023). Multiple reports place her among the rare entertainers who have achieved billionaire status, reflecting disciplined ownership and savvy deal-making. Your mix of beauty-forward splurges, premium travel, and cultural curiosity echoes that energy.`,
+          parallel: `Lean into high-impact beauty that photographs beautifully and lasts. Consider Fenty Beauty mainstays like Pro Filt’r foundation, plus statement looks for events. For off-duty style, note Rihanna’s embrace of elevated streetwear—think structured outerwear and standout accessories—paired with collectible pieces you’ll keep for years.`,
+          suggestions: [
+            'Build an event-ready beauty kit anchored by Fenty Beauty',
+            'Blend elevated streetwear with archival accessories',
+            'Seek ownership opportunities in projects you love'
+          ]
+        },
+        'Kim Kardashian': {
+          title: 'Social Elite — Kim Kardashian Match',
+          summary: `You optimize for precision and consistency, turning aesthetics into a system. Like Kim Kardashian, your taste runs toward minimal, sculptural pieces and a highly considered routine that supports a high-visibility life.`,
+          why: `Kim’s SKIMS (multi-billion valuation) and SKKN by Kim reflect an operator’s mindset: build essential, daily-use products at luxury quality. Her home design—often photographed in neutral, museum-quiet palettes—favors architectural minimalism, and she’s known to travel by private jet (a customized G650ER reported in 2022). Your answers—curated social presence, fine dining, and investment-minded fashion—mirror that disciplined approach.`,
+          parallel: `Create a capsule wardrobe built around form and function: neutral tones, strong tailoring, and technically-sound materials. For grooming, SKKN-style routines—pared back but high performance—fit your preference for repeatable excellence.`,
+          suggestions: [
+            'Refine a neutral capsule anchored by sculpted silhouettes',
+            'Adopt a consistent, high-efficacy skincare routine (SKKN-like approach)',
+            'Commission a statement piece for your home in a calm palette'
+          ]
+        },
+        'Ryan Reynolds': {
+          title: 'Aspiring Sophisticate — Ryan Reynolds Match',
+          summary: `You blend approachability with sharp business instincts. Like Ryan Reynolds, you appreciate well-made basics, memorable experiences, and smart ownership plays—prioritizing value without losing charm.`,
+          why: `Reynolds helped build Aviation American Gin (sold to Diageo in 2020) and later saw Mint Mobile acquired by T-Mobile (2023). He co-owns Wrexham AFC and cofounded the creative studio Maximum Effort. As an Omega ambassador, he leans classic over flashy. Your answers—industry mixers, upgraded travel, quality spirits—line up with that practical, brand-building sensibility.`,
+          parallel: `Think in terms of compounding taste and equity: pick a classic watch, invest in personal brand projects, and make hospitality (well-executed dinners, great gin martinis) part of your signature.`,
+          suggestions: [
+            'Stock a thoughtful bar cart (try a citrus-forward gin profile)',
+            'Elevate essentials—tailored navy suit, leather sneakers',
+            'Consider small equity stakes in products you genuinely use'
+          ]
+        },
+        'Blake Lively': {
+          title: 'Aspiring Sophisticate — Blake Lively Match',
+          summary: `You curate rather than consume. Like Blake Lively—known for high-impact red-carpet moments and launching Betty Buzz (and Betty Booze)—you enjoy hosting, presentation, and quietly high standards.`,
+          why: `Lively is known for styling herself for major appearances, signaling deep involvement in fit, color, and silhouette. Her beverage brands reflect a polished, entertaining-first lifestyle. Your responses—hosted dinners, boutique fitness, new-restaurant curiosity—point to the same thoughtful, celebratory approach.`,
+          parallel: `Dial up hosting with better glassware, a signature spritz built on quality mixers, and tailoring that flatters without shouting.`,
+          suggestions: [
+            'Keep Betty Buzz–style mixers for elevated zero-proof options',
+            'Invest in tailoring for clean, photo-ready lines',
+            'Build a seasonal tablescape kit (linens, candles, stems)'
+          ]
+        },
+        'Zendaya': {
+          title: 'Aspiring Sophisticate — Zendaya Match',
+          summary: `You’re fashion-literate and editorially minded. Like Zendaya—who has worked with stylist Law Roach and serves as an ambassador for houses such as Bulgari and Louis Vuitton—you prefer precise silhouettes and storytelling through clothes.`,
+          why: `Zendaya’s partnerships (Bulgari high jewelry; campaigns with major maisons) and standout premieres show she embraces archival references and modern craftsmanship. Your interest in prestige media, design-forward interiors, and boutique wellness suggests a similar eye for detail.`,
+          parallel: `Focus on sharp, architectural looks anchored by jewelry with line and proportion. Repeat standout pieces with new styling to build a narrative wardrobe.`,
+          suggestions: [
+            'Consider a signature piece from a fine jeweler (Bulgari-inspired aesthetic)',
+            'Archive and restyle statement gowns or suits',
+            'Build looks around proportion: sleek knit + wide trouser'
+          ]
+        },
+        'Jennifer Lawrence': {
+          title: 'Casual Consumer — Jennifer Lawrence Match',
+          summary: `You value comfort and candor over pretense. Like Jennifer Lawrence—known for a down-to-earth public persona and long relationship with Dior—you choose quality that’s wearable, and you don’t mind repeating favorites.`,
+          why: `Lawrence often mixes relaxed staples with polished elements and remains openly relatable in interviews. Your answers—neighborhood dining, mainstream favorites, functional home choices—track to a sensible, low-maintenance lifestyle that still appreciates good design.`,
+          parallel: `Stick to easy uniforms: great denim, a trench, and a reliable handbag. Add one elevated piece (Dior-like silhouette or a well-cut coat) to keep things camera-ready without fuss.`,
+          suggestions: [
+            'Choose a go-to day bag with structure and minimal branding',
+            'Rotate one premium outerwear piece through seasons',
+            'Keep makeup minimal with a single signature lip or brow product'
+          ]
+        },
+        'Chris Pratt': {
+          title: 'Casual Consumer — Chris Pratt Match',
+          summary: `You’re practical, outdoorsy, and brand-agnostic. Like Chris Pratt—who often shares farm life, fishing, and practical routines—you lean into dependable gear over status flourishes.`,
+          why: `Public glimpses of Pratt’s lifestyle emphasize family time, outdoors, and straightforward routines. Your responses—blockbuster comfort, casual dining, functional design—echo that choice for simplicity.`,
+          parallel: `Build a durable rotation: workwear jacket, trail-ready boots, and a weekender bag that can take some scratches.`,
+          suggestions: [
+            'Prioritize durable fabrics (canvas, waxed cotton, ripstop)',
+            'Choose a multi-purpose boot suited for city and trail',
+            'Keep cooking simple: cast iron, few great knives'
+          ]
+        },
+        'Emma Stone': {
+          title: 'Casual Consumer — Emma Stone Match',
+          summary: `Quietly considered with classic lines. Like Emma Stone—who often opts for clean silhouettes and has fronted campaigns for Louis Vuitton—you appreciate timelessness without loud labels.`,
+          why: `Stone’s red-carpet choices skew classic and refined. Your balanced answers—some cultural curiosity, some practicality—suggest you prefer pieces that age well and feel easy to re-wear.`,
+          parallel: `Think soft tailoring, ballet flats or loafers, and a compact crossbody. Focus on fabric and fit instead of logos.`,
+          suggestions: [
+            'Choose one refined leather good (belt or small bag)',
+            'Lean into neutral palettes with a single accent color',
+            'Build a weekend uniform: knit + tailored trouser + flat'
+          ]
+        },
+        'Keanu Reeves': {
+          title: 'Practical Minimalist — Keanu Reeves Match',
+          summary: `Discreet, unfussy, purpose-built. Like Keanu Reeves—famously private, generous, and cofounder of Arch Motorcycle—you value function, longevity, and kindness over displays.`,
+          why: `Reeves has a long public record of low-key choices (from taking the subway in viral clips to quiet philanthropic gestures) and favors simple, dark, durable clothing. Your answers—functional interiors, minimal social posting, value-driven dining—reflect that same unbranded confidence.`,
+          parallel: `Develop a uniform: quality boots, well-cut dark denim, and a sturdy jacket. Spend where it counts (fit and fabrication) and keep the rest simple.`,
+          suggestions: [
+            'Invest in resoleable boots and Japanese selvedge denim',
+            'Keep a low-maintenance grooming kit that just works',
+            'Consider experiences over things: rides, books, music'
+          ]
+        },
+        'Anne Hathaway': {
+          title: 'Practical Minimalist — Anne Hathaway Match',
+          summary: `Elegant restraint with longevity. Anne Hathaway often repeats and restyles pieces, and has championed more sustainable, mindful wardrobes as part of a polished, modern image.`,
+          why: `Hathaway’s public choices frequently emphasize re-wear, tailoring, and a composed palette. Your answers—high–low mix at home, simple routines, and practical dining—match a thoughtful, maintenance-light approach.`,
+          parallel: `Build a capsule of mixable pieces in weights that layer across seasons.`,
+          suggestions: [
+            'Choose fabrics that hold shape (tropical wool, compact knits)',
+            'Rely on a tailor; shaping beats logos',
+            'Rotate a few elevated flats or low heels'
+          ]
+        },
+        'Matt Damon': {
+          title: 'Practical Minimalist — Matt Damon Match',
+          summary: `Grounded and philanthropic. Matt Damon, cofounder of Water.org, is known for a family-first, relatively private lifestyle that reads practical rather than performative.`,
+          why: `Damon’s public profile emphasizes work and causes over flash. Your selections—function-forward interiors, budget-aware dining, low-visibility social—point to similar priorities.`,
+          parallel: `Keep gear straightforward and resilient; invest time and money in impact-driven projects that matter to you.`,
+          suggestions: [
+            'Choose one durable everyday watch and wear it for a decade',
+            'Channel spending into causes (local or global) you care about',
+            'Maintain a simple, reliable travel kit'
+          ]
+        },
+      };
+
+      // Map personality type to title if not directly a celeb
+      function titleForType(type, celeb){
+        const map = {
+          'Social Elite': 'Social Elite',
+          'Aspiring Sophisticate': 'Aspiring Sophisticate',
+          'Casual Consumer': 'Casual Consumer',
+          'Practical Minimalist': 'Practical Minimalist'
+        };
+        const c = sections[celeb];
+        return c ? c.title : map[type] + ' — ' + celeb + ' Match';
+      }
+
+      return function render(type, celeb){
+        const data = sections[celeb];
+        if (!data) {
+          return {
+            title: titleForType(type, celeb),
+            summary: 'A tailored match based on your quiz profile.',
+            why: 'We matched you based on your travel, dining, fashion, and cultural signals.',
+            parallel: 'Invest in what you truly use and love; repeat standout pieces often.',
+            suggestions: []
+          };
+        }
+        return data;
+      }(type, celeb);
+    }
+
+    // ----------------------------
+    // App state
+    // ----------------------------
+
+    const state = {
+      step: 'welcome',
+      index: 0,
+      selections: {}, // id -> { id, text, points }
+    };
+
+    // ----------------------------
+    // DOM nodes
+    // ----------------------------
+
+    const elStageWelcome = document.getElementById('stageWelcome');
+    const elStageQuestion = document.getElementById('stageQuestion');
+    const elStageEmail = document.getElementById('stageEmail');
+    const elStageResult = document.getElementById('stageResult');
+    const elStageAdmin = document.getElementById('stageAdmin');
+
+    const elProgress = document.getElementById('progressBar');
+
+    const elBtnStart = document.getElementById('btnStart');
+    const elBtnHow = document.getElementById('btnHow');
+
+    const elQText = document.getElementById('qText');
+    const elAnswers = document.getElementById('answers');
+    const elBtnPrev = document.getElementById('btnPrev');
+    const elBtnNext = document.getElementById('btnNext');
+
+    const elEmailInput = document.getElementById('emailInput');
+    const elEmailError = document.getElementById('emailError');
+    const elBtnEmailBack = document.getElementById('btnEmailBack');
+    const elBtnSeeResults = document.getElementById('btnSeeResults');
+
+    const elResultBadge = document.getElementById('resultBadge');
+    const elResultTitle = document.getElementById('resultTitle');
+    const elResultSummary = document.getElementById('resultSummary');
+    const elResultWhy = document.getElementById('resultWhy');
+    const elResultCelebrity = document.getElementById('resultCelebrity');
+
+    const elNativeShare = document.getElementById('btnNativeShare');
+    const elShareX = document.getElementById('shareX');
+    const elShareFB = document.getElementById('shareFB');
+    const elShareLI = document.getElementById('shareLI');
+    const elCopyLink = document.getElementById('btnCopyLink');
+
+    const elFoot = document.getElementById('foot');
+
+    // Admin
+    const elAdminSearch = document.getElementById('adminSearch');
+    const elAdminTable = document.getElementById('adminTable').querySelector('tbody');
+    const elBtnExportCSV = document.getElementById('btnExportCSV');
+    const elBtnExportJSON = document.getElementById('btnExportJSON');
+    const elBtnClear = document.getElementById('btnClear');
+
+    // ----------------------------
+    // Rendering & navigation
+    // ----------------------------
+
+    function updateProgress(){
+      const pct = (state.index / questions.length) * 100;
+      elProgress.style.width = pct.toFixed(2) + '%';
+    }
+
+    function showStage(key){
+      [elStageWelcome, elStageQuestion, elStageEmail, elStageResult, elStageAdmin].forEach(el => el.classList.add('hidden'));
+      if (key === 'welcome') elStageWelcome.classList.remove('hidden');
+      if (key === 'question') elStageQuestion.classList.remove('hidden');
+      if (key === 'email') elStageEmail.classList.remove('hidden');
+      if (key === 'result') elStageResult.classList.remove('hidden');
+      if (key === 'admin') elStageAdmin.classList.remove('hidden');
+      state.step = key;
+    }
+
+    function renderQuestion(){
+      const q = questions[state.index];
+      elQText.textContent = `Q${state.index+1} · ${q.text}`;
+      elAnswers.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const id = `${q.id}_${i}`;
+        const wrapper = document.createElement('label');
+        wrapper.className = 'answer';
+        wrapper.setAttribute('tabindex','0');
+        wrapper.innerHTML = `
+          <input type="radio" name="${q.id}" id="${id}" />
+          <div>
+            <div style="font-weight:600;">${opt.text}</div>
+            <div style="color:var(--muted); font-size:12px;">${['1','2','3','4'][i]} pts</div>
+          </div>
+        `;
+        const input = wrapper.querySelector('input');
+        const prevSel = state.selections[q.id]?.text === opt.text;
+        if (prevSel) { input.checked = true; wrapper.classList.add('selected'); }
+        wrapper.addEventListener('click', () => selectAnswer(q, opt, wrapper));
+        wrapper.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectAnswer(q,opt,wrapper); } });
+        elAnswers.appendChild(wrapper);
+      });
+
+      elBtnPrev.disabled = state.index === 0;
+      elBtnNext.disabled = !state.selections[q.id];
+      updateProgress();
+    }
+
+    function selectAnswer(q, opt, wrapper){
+      [...elAnswers.querySelectorAll('.answer')].forEach(el => el.classList.remove('selected'));
+      wrapper.classList.add('selected');
+      state.selections[q.id] = { id: q.id, question: q.text, text: opt.text, points: opt.points };
+      elBtnNext.disabled = false;
+    }
+
+    function goNext(){
+      if (state.index < questions.length - 1){
+        state.index += 1; renderQuestion(); return;
+      }
+      // Finished questions -> email
+      updateProgress();
+      showStage('email');
+    }
+
+    function goPrev(){
+      if (state.index > 0){ state.index -= 1; renderQuestion(); }
+    }
+
+    function resetQuiz(){
+      state.index = 0; state.selections = {}; updateProgress();
+      showStage('question'); renderQuestion();
+    }
+
+    function computeAndRenderResults(email){
+      const answers = questions.map(q => state.selections[q.id]).filter(Boolean);
+      const total = sumScores(answers);
+      const type = classify(total);
+      const celeb = chooseCelebrity(type, answers);
+      const content = buildCelebrityContent(type, celeb);
+
+      // Save
+      const entry = {
+        id: 'sub_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+        timestamp: new Date().toISOString(),
+        email: String(email).trim(),
+        answers,
+        totalScore: total,
+        resultType: type,
+        celebrityMatch: celeb,
+        device: { ua: navigator.userAgent, w: window.innerWidth, h: window.innerHeight }
+      };
+      saveSubmission(entry);
+
+      // Render
+      elResultBadge.textContent = `${type} • ${celeb}`;
+      elResultTitle.textContent = content.title;
+      elResultSummary.innerHTML = `<p>${content.summary}</p>`;
+      elResultWhy.innerHTML = `<p>${content.why}</p>`;
+      const sug = content.suggestions?.length ? `<ul>${content.suggestions.map(s=>`<li>${s}</li>`).join('')}</ul>` : '';
+      elResultCelebrity.innerHTML = `<p>${content.parallel}</p>${sug}`;
+
+      // Share links
+      const shareUrl = location.origin + location.pathname;
+      const shareText = `I got “${type}” matched with ${celeb} on the Elite Status Assessment. Try it:`;
+      const encoded = encodeURIComponent(`${shareText} ${shareUrl}`);
+      elShareX.href = `https://twitter.com/intent/tweet?text=${encoded}`;
+      elShareFB.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+      elShareLI.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+
+      showStage('result');
+      updateProgress();
+    }
+
+    // ----------------------------
+    // Admin
+    // ----------------------------
+
+    function toCSV(rows){
+      const headers = ['timestamp','email','totalScore','resultType','celebrityMatch','answers'];
+      const esc = (s) => '"' + String(s).replace(/"/g,'""') + '"';
+      const lines = [headers.join(',')];
+      rows.forEach(r => {
+        const ans = (r.answers||[]).map((a,i)=>`${i+1}:${a.text} [${a.points}]`).join(' | ');
+        lines.push([
+          r.timestamp,
+          r.email,
+          r.totalScore,
+          r.resultType,
+          r.celebrityMatch,
+          ans
+        ].map(esc).join(','));
+      });
+      return lines.join('\n');
+    }
+
+    function download(filename, content, type='text/plain'){
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    }
+
+    function renderAdmin(filter=''){
+      const all = loadSubmissions();
+      const term = filter.trim().toLowerCase();
+      const rows = term ? all.filter(r => (
+        r.email?.toLowerCase().includes(term) ||
+        r.resultType?.toLowerCase().includes(term) ||
+        r.celebrityMatch?.toLowerCase().includes(term)
+      )) : all;
+
+      elAdminTable.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        const ans = (r.answers||[]).map((a,i)=>`${i+1}: ${a.text} [${a.points}]`).join('<br/>');
+        tr.innerHTML = `
+          <td>${formatDate(r.timestamp)}</td>
+          <td>${r.email}</td>
+          <td>${r.totalScore}</td>
+          <td>${r.resultType}</td>
+          <td>${r.celebrityMatch}</td>
+          <td style="color:var(--muted); font-size:12px;">${ans}</td>
+        `;
+        elAdminTable.appendChild(tr);
+      });
+    }
+
+    function openAdmin(){
+      showStage('admin');
+      renderAdmin('');
+    }
+
+    // ----------------------------
+    // Events
+    // ----------------------------
+
+    elBtnStart.addEventListener('click', () => {
+      showStage('question');
+      renderQuestion();
+    });
+
+    elBtnHow.addEventListener('click', () => {
+      alert('You\'ll answer 18 lifestyle questions. We\'ll score your sophistication, classify you into one of four types, and match you with a well-researched celebrity parallel with specific, accurate examples and recommendations.');
+    });
+
+    elBtnPrev.addEventListener('click', goPrev);
+    elBtnNext.addEventListener('click', goNext);
+
+    elBtnEmailBack.addEventListener('click', () => { showStage('question'); updateProgress(); });
+
+    elBtnSeeResults.addEventListener('click', () => {
+      const email = elEmailInput.value || '';
+      if (!validateEmail(email)){
+        elEmailError.classList.remove('hidden');
+        setTimeout(()=>elEmailError.classList.add('hidden'), 3000);
+        return;
+      }
+      computeAndRenderResults(email);
+    });
+
+    // Share
+    elNativeShare.addEventListener('click', async () => {
+      const type = elResultBadge.textContent || 'My result';
+      const shareData = {
+        title: 'Elite Status Assessment',
+        text: type + ' — Elite Status Assessment',
+        url: location.origin + location.pathname
+      };
+      try {
+        if (navigator.share) { await navigator.share(shareData); }
+        else { await navigator.clipboard.writeText(shareData.url); alert('Link copied.'); }
+      } catch (e) { /* ignore */ }
+    });
+
+    elCopyLink.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(location.origin + location.pathname); alert('Link copied.'); } catch {}
+    });
+
+    // Secret admin triggers
+    elFoot.addEventListener('dblclick', () => {
+      if (confirm('Open admin dashboard?')) openAdmin();
+    });
+
+    // URL-based admin access
+    (function(){
+      const path = location.pathname.toLowerCase();
+      const hash = location.hash.toLowerCase();
+      const qs = new URLSearchParams(location.search);
+      if (path.endsWith('/admin') || hash === '#admin' || qs.get('admin') === '1'){
+        openAdmin();
+      }
+    })();
+
+    elAdminSearch.addEventListener('input', (e)=> renderAdmin(e.target.value));
+
+    elBtnExportCSV.addEventListener('click', () => {
+      const rows = loadSubmissions();
+      download('elite-status-submissions.csv', toCSV(rows), 'text/csv');
+    });
+
+    elBtnExportJSON.addEventListener('click', () => {
+      const rows = loadSubmissions();
+      download('elite-status-submissions.json', JSON.stringify(rows, null, 2), 'application/json');
+    });
+
+    elBtnClear.addEventListener('click', () => {
+      if (confirm('This will permanently clear all locally stored submissions on this device. Continue?')){
+        localStorage.removeItem(STORAGE_KEY);
+        renderAdmin('');
+      }
+    });
+
+    // Keyboard shortcut: type "admin" to open admin
+    (function(){
+      let buffer = '';
+      window.addEventListener('keydown', (e) => {
+        if (e.key && e.key.length === 1){
+          buffer = (buffer + e.key).slice(-5);
+          if (buffer.toLowerCase() === 'admin') openAdmin();
+        }
+      });
+    })();
+
+    // Initialize
+    updateProgress();
+  </script>
+</body>
+</html>
