@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gold: #d4af37;
+}
+
+body {
+  @apply bg-ebony text-white font-body antialiased;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition-all duration-200;
+}
+
+.btn-primary {
+  @apply bg-gold-500 text-black hover:bg-gold-400 active:bg-gold-600 shadow-luxe;
+}
+
+.card {
+  @apply bg-onyx/70 backdrop-blur border border-white/10 rounded-2xl shadow-luxe;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fadeInUp 300ms ease-out both; }
