@@ -25,9 +25,25 @@ const canSubmit = computed(() => emailValid.value && consent.value && Object.key
 
 const result = ref<null | { type: string; celebrity: string; description: string; details: any }>(null)
 
+const isLoading = ref(false)
+const loadError = ref<string | null>(null)
+
 async function loadQuestions() {
-  const { data } = await useFetch('/api/quiz/questions')
-  if (data.value) questions.value = data.value
+  isLoading.value = true
+  loadError.value = null
+  try {
+    const { data, error } = await useFetch<QuizQuestion[]>('/api/quiz/questions')
+    if (error.value) throw error.value
+    if (data.value && Array.isArray(data.value) && data.value.length > 0) {
+      questions.value = data.value
+    } else {
+      throw new Error('No questions returned')
+    }
+  } catch (e: any) {
+    loadError.value = e?.message || 'Failed to load questions'
+  } finally {
+    isLoading.value = false
+  }
 }
 
 async function next() {
@@ -84,7 +100,12 @@ onMounted(loadQuestions)
     </section>
 
     <section v-else class="card p-6">
-      <div class="animate-pulse text-white/60">Loading curated questions…</div>
+      <div v-if="isLoading" class="animate-pulse text-white/60">Loading curated questions…</div>
+      <div v-else-if="loadError" class="text-red-400">
+        {{ loadError }}
+        <button class="btn border border-white/10 ml-3" @click="loadQuestions">Retry</button>
+      </div>
+      <div v-else class="text-white/60">No questions available.</div>
     </section>
 
     <section v-if="step >= questions.length" class="card p-6">
