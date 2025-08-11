@@ -1,4 +1,4 @@
-import { aggregateNigerianCelebrities } from '@/app/server/utils/celeb'
+import { aggregateNigerianCelebrities } from '@/server/utils/celeb'
 
 interface BodyPayload {
   email: string
